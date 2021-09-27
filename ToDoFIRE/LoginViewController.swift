@@ -15,11 +15,13 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    var ref: DatabaseReference!
     let segueID = "tasksSegue"
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        // путь к базе
+        ref = Database.database().reference(withPath: "users")
         warnLabel.alpha = 0
         // уведомления о показе и скрытии клавиатуры
         NotificationCenter.default.addObserver(
@@ -98,14 +100,21 @@ class LoginViewController: UIViewController {
             displayWarning(text: "Info is incorrect")
             return
         }
-        Auth.auth().createUser(withEmail: email, password: password) { user, error in
-            if error == nil {
-                if user == nil {
-                    print("User is not created!")
-                }
-            } else {
-                print(error?.localizedDescription)
+        Auth.auth().createUser(withEmail: email, password: password) { [weak self] user, error in
+            // получаем user с типом данных AuthDataResult?
+            guard error == nil, user != nil else {
+                print("ERROR: \(error?.localizedDescription)")
+                return
             }
+            // получаем тип User
+            guard let user = user?.user else {
+                print("ERROR: \(error?.localizedDescription)")
+                return
+            }
+            // создаем ссылку на пользователя в базе
+            let userRef = self?.ref.child(user.uid)
+            // устанавливаем значение email
+            userRef?.setValue(["email": user.email])
         }
     }
 
