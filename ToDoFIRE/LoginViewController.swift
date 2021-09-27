@@ -15,8 +15,11 @@ class LoginViewController: UIViewController {
     @IBOutlet weak var emailTextField: UITextField!
     @IBOutlet weak var passwordTextField: UITextField!
     
+    let segueID = "tasksSegue"
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         warnLabel.alpha = 0
         // уведомления о показе и скрытии клавиатуры
         NotificationCenter.default.addObserver(
@@ -31,6 +34,12 @@ class LoginViewController: UIViewController {
             name: UIResponder.keyboardDidHideNotification,
             object: nil
         )
+        // пропускает аутентификацию, если уже регался
+        Auth.auth().addStateDidChangeListener { [weak self] auth, user in
+            if user != nil {
+                self?.performSegue(withIdentifier: (self?.segueID)!, sender: nil)
+            }
+        }
     }
     
     @objc func kbDidShow(notification: Notification) {
@@ -72,7 +81,7 @@ class LoginViewController: UIViewController {
             }
             // если все ок, то проходим дальше
             if user != nil {
-                self?.performSegue(withIdentifier: "tasksSegue", sender: nil)
+                self?.performSegue(withIdentifier: (self?.segueID)!, sender: nil)
                 return
             }
             self?.displayWarning(text: "No such user")
@@ -84,11 +93,13 @@ class LoginViewController: UIViewController {
             displayWarning(text: "Info is incorrect")
             return
         }
-        Auth.auth().createUser(withEmail: email, password: password) { [weak self] user, error in
+        Auth.auth().createUser(withEmail: email, password: password) { user, error in
             if error == nil {
-                if user != nil {
-                    self?.performSegue(withIdentifier: "tasksSegue", sender: nil)
+                if user == nil {
+                    print("User is not created!")
                 }
+            } else {
+                print(error?.localizedDescription)
             }
         }
     }
