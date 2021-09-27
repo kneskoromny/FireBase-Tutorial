@@ -71,7 +71,6 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="loginTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="Hty-VE-ncb"/>
-                                                    <segue destination="VZs-Pf-LEZ" kind="show" identifier="tasksSegue" id="KFx-k2-gTG"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gn6-KH-nyo">
@@ -114,6 +113,7 @@
                         <outlet property="emailTextField" destination="h6X-HB-5sB" id="ckr-fk-W89"/>
                         <outlet property="passwordTextField" destination="3cV-1G-uYm" id="sFN-oS-aIz"/>
                         <outlet property="warnLabel" destination="mvc-kr-OEk" id="GZc-mO-ysW"/>
+                        <segue destination="VZs-Pf-LEZ" kind="show" identifier="tasksSegue" id="dyV-AD-bic"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -181,6 +181,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" id="VZs-Pf-LEZ" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <navigationItem key="navigationItem" id="TtL-gL-cBL"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="yFC-Be-6h7">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="56"/>
                         <autoresizingMask key="autoresizingMask"/>

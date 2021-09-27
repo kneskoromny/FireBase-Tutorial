@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class LoginViewController: UIViewController {
 
@@ -16,7 +17,7 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        warnLabel.alpha = 0
         // уведомления о показе и скрытии клавиатуры
         NotificationCenter.default.addObserver(
             self,
@@ -47,12 +48,42 @@ class LoginViewController: UIViewController {
         (self.view as! UIScrollView).contentSize = CGSize(width: self.view.bounds.size.width, height: self.view.bounds.size.height)
     }
     
-    @IBAction func loginTapped(_ sender: UIButton) {
-        
+    private func displayWarning(text: String) {
+        warnLabel.text = text
+        // меняем непрозрачность лейбла с анимацией
+        UIView.animate(withDuration: 3, delay: 0, options: [.curveEaseInOut]) { [weak self] in
+            self?.warnLabel.alpha = 1
+        } completion: { [weak self] complete in
+            self?.warnLabel.alpha = 0
+        }
+
     }
-    
+    // работа с Firebase
+    @IBAction func loginTapped(_ sender: UIButton) {
+        guard let email = emailTextField.text, let password = passwordTextField.text, email != "", password != "" else {
+            displayWarning(text: "Info is incorrect")
+            return
+        }
+        // авторизация с Firebase
+        Auth.auth().signIn(withEmail: email, password: password) { [weak self] user, error in
+            if error != nil {
+                self?.displayWarning(text: "Error occured")
+                return
+            }
+            // если все ок, то проходим дальше
+            if user != nil {
+                self?.performSegue(withIdentifier: "tasksSegue", sender: nil)
+                return
+            }
+            self?.displayWarning(text: "No such user")
+        }
+    }
+    // регистрация нового пользователя (для простоты в той же форме)
     @IBAction func registerTapped(_ sender: UIButton) {
-        
+        guard let email = emailTextField.text, let password = passwordTextField.text, email != "", password != "" else {
+            displayWarning(text: "Info is incorrect")
+            return
+        }
     }
 
 }
