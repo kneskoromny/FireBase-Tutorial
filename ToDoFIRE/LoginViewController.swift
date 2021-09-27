@@ -41,6 +41,11 @@ class LoginViewController: UIViewController {
             }
         }
     }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        emailTextField.text = ""
+        passwordTextField.text = ""
+    }
     
     @objc func kbDidShow(notification: Notification) {
         // получаем словарь с данными
